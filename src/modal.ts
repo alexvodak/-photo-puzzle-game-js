@@ -1,0 +1,69 @@
+class Modal {
+    private modalElement: HTMLDivElement;
+    private contentElement: HTMLDivElement;
+    private headerElement: HTMLDivElement;
+    private bodyElement: HTMLDivElement;
+    private footerElement: HTMLDivElement;    
+    private closeButton: HTMLButtonElement;
+
+    constructor(title: string, content: string | HTMLElement, onSubmit: () => void) {
+        this.modalElement = document.createElement('div');
+        this.modalElement.classList.add('modal');
+
+        this.contentElement = document.createElement('div');
+        this.contentElement.classList.add('modal-content');
+        this.modalElement.appendChild(this.contentElement);
+
+        this.headerElement =  document.createElement('div');
+        this.headerElement.classList.add('modal-header');
+        const titleElement = document.createElement('h4');
+        titleElement.innerText = title;
+        this.contentElement.appendChild(this.headerElement);
+        this.headerElement.appendChild(titleElement);
+
+        this.bodyElement =  document.createElement('div');
+        this.bodyElement.classList.add('modal-body');
+        if (typeof content === 'string') {
+            this.bodyElement.innerHTML = content;
+        } else {
+            this.bodyElement.appendChild(content);
+        }
+        this.contentElement.appendChild(this.bodyElement);
+
+        this.closeButton = document.createElement('button');
+        this.closeButton.classList.add('modal-close');
+        this.closeButton.innerText = '×';
+        this.closeButton.onclick = () => this.close();
+        this.contentElement.appendChild(this.closeButton);
+
+        this.footerElement = document.createElement('div');
+        this.footerElement.classList.add('modal-footer');
+        this.modalElement.appendChild(this.footerElement);
+
+        const submitButton = document.createElement('button');
+        submitButton.innerText = 'Submit';
+        submitButton.onclick = () => {
+            onSubmit();
+            this.close();
+        };
+        this.footerElement.appendChild(submitButton);
+
+        this.closeButton = document.createElement('button');
+        this.closeButton.classList.add('modal-close');
+        this.closeButton.innerHTML = '&times;';
+        this.closeButton.onclick = () => this.close();
+        this.modalElement.appendChild(this.closeButton);
+
+        document.body.appendChild(this.modalElement);
+    }
+
+    open() {
+        this.modalElement.style.display = 'block';
+    }
+
+    close() {
+        this.modalElement.style.display = 'none';
+    }
+}
+
+export { Modal };

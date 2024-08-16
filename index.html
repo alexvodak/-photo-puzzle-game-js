@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puzzle Game</title>
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/puzzle.css">
+</head>
+<body>
+    <header class="header" id="menu">
+        <nav class="navbar">
+          <h1 class="navbar-title">Puzzle Game</h1>
+          <ul class="navbar-menu">
+            <li class="nav-item"><button id="upload-btn" class="nav-link">Upload Image</button></li>
+            <li class="nav-item"><button id="start-game-btn" class="nav-link">Start game</button></li>
+          </ul>
+        </nav>
+    </header>
+    
+    <div id="puzzle-container">
+        <!-- Puzzle pieces will be generated here by JavaScript -->
+    </div>
+
+    <div id="uploadPictureModal" class="modal"></div>
+
+    <script type="module" src="dist/app.js"></script>
+</body>
+</html>

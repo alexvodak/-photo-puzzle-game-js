@@ -1,0 +1,23 @@
+#puzzle-container {
+    width: 400px;
+    height: 400px;
+    position: relative;
+    border: 2px solid #333;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+.puzzle-piece {
+    width: 100px;
+    height: 100px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    background-size: 400px 400px;
+    position: absolute;
+    cursor: grab;
+}
+
+.puzzle-piece.dragging {
+    opacity: 0.5;
+}
