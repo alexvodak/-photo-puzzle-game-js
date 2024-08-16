@@ -64,36 +64,113 @@ button {
     background-color: #6c757d;
 }
 
-@media (max-width: 768px) {
-    .navbar-menu {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .nav-item button {
-        text-align: center;
-        width: 100%;
-    }
-}
-
-@media (max-width: 768px) {
-    .header {
+/* Extra Small Devices (Phones, <576px) */
+@media (max-width: 575.98px) {
+    .navbar {
         flex-direction: column;
         align-items: flex-start;
-    }
-
-    .navbar-menu {
-        flex-direction: column;
-        gap: 10px;
-        width: 100%;
+        padding: 10px;
     }
 
     .navbar-title {
         margin-bottom: 10px;
+        font-size: 1.3em;
     }
 
-    .nav-item button.nav-link {
-        text-align: left;
+    .navbar-menu {
+        flex-direction: column;
+        gap: 10px;
         width: 100%;
+    }
+
+    .nav-item button {
+        width: 100%;
+        text-align: left;
+    }
+}
+
+/* Small Devices (≥576px and <768px) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+    }
+
+    .navbar-title {
+        margin-bottom: 10px;
+        font-size: 1.4em;
+    }
+
+    .navbar-menu {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .nav-item button {
+        width: 100%;
+        text-align: left;
+    }
+}
+
+/* Medium Devices (Tablets, ≥768px and <992px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .navbar {
+        padding: 10px 20px;
+    }
+
+    .navbar-title {
+        font-size: 1.5em;
+    }
+
+    .navbar-menu {
+        flex-direction: row;
+        gap: 15px;
+    }
+
+    .nav-item button {
+        width: auto;
+        text-align: center;
+    }
+}
+
+/* Large Devices (Desktops, ≥992px and <1200px) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .navbar {
+        padding: 15px 30px;
+    }
+
+    .navbar-title {
+        font-size: 1.6em;
+    }
+
+    .navbar-menu {
+        flex-direction: row;
+        gap: 20px;
+    }
+
+    .nav-item button {
+        padding: 10px 20px;
+    }
+}
+
+/* Extra Large Devices (Large Desktops, ≥1200px) */
+@media (min-width: 1200px) {
+    .navbar {
+        padding: 15px 40px;
+    }
+
+    .navbar-title {
+        font-size: 1.8em;
+    }
+
+    .navbar-menu {
+        flex-direction: row;
+        gap: 25px;
+    }
+
+    .nav-item button {
+        padding: 10px 25px;
     }
 }
