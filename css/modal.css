@@ -25,6 +25,15 @@
 .modal-header {
     font-size: 1.5em;
     margin-bottom: 15px;
+    justify-content: space-between;
+    display: flex;
+}
+
+.modal-header h4 {
+    margin-block-start: 15px;
+    margin-block-end: 5px;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
 }
 
 .modal-body {
@@ -32,17 +41,21 @@
 }
 
 .modal-footer {
-    display: flex;
-    justify-content: flex-end;
+    display: block;
     gap: 10px;
 }
 
 .modal-close {
     margin-right: 10px;
-    background: none;
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
+    width: min-content;
+    height: min-content;
+    margin-block-start: 5px;
+    margin-block-end: 5px;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
 }
 
 button {

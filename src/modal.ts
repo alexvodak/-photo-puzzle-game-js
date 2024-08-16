@@ -6,7 +6,7 @@ class Modal {
     private footerElement: HTMLDivElement;    
     private closeButton: HTMLButtonElement;
 
-    constructor(title: string, content: string | HTMLElement, onSubmit: () => void) {
+    constructor(id: string, title: string, content: string | HTMLElement, onSubmit: () => void) {
         this.modalElement = document.createElement('div');
         this.modalElement.classList.add('modal');
 
@@ -34,11 +34,11 @@ class Modal {
         this.closeButton.classList.add('modal-close');
         this.closeButton.innerText = '×';
         this.closeButton.onclick = () => this.close();
-        this.contentElement.appendChild(this.closeButton);
+        this.headerElement.appendChild(this.closeButton);
 
         this.footerElement = document.createElement('div');
         this.footerElement.classList.add('modal-footer');
-        this.modalElement.appendChild(this.footerElement);
+        this.contentElement.appendChild(this.footerElement);
 
         const submitButton = document.createElement('button');
         submitButton.innerText = 'Submit';
@@ -48,12 +48,6 @@ class Modal {
         };
         this.footerElement.appendChild(submitButton);
 
-        this.closeButton = document.createElement('button');
-        this.closeButton.classList.add('modal-close');
-        this.closeButton.innerHTML = '&times;';
-        this.closeButton.onclick = () => this.close();
-        this.modalElement.appendChild(this.closeButton);
-
         document.body.appendChild(this.modalElement);
     }
 
@@ -62,6 +56,7 @@ class Modal {
     }
 
     close() {
+        document.body.removeChild(this.modalElement);
         this.modalElement.style.display = 'none';
     }
 }
