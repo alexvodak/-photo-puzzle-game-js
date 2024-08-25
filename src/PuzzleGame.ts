@@ -4,6 +4,7 @@ class PuzzleGame {
     private cols: number;
     private puzzleContainer: HTMLElement;
     private pieces: HTMLElement[] = [];
+    private pieceSize = 100; // Assuming each piece is 100x100 pixels
 
     constructor(imageUrl: string, rows: number, cols: number, containerId: string) {
         this.imageUrl = imageUrl;
@@ -19,9 +20,9 @@ class PuzzleGame {
                 const piece = document.createElement('div');
                 piece.classList.add('puzzle-piece');
                 piece.style.backgroundImage = `url(${this.imageUrl})`;
-                piece.style.backgroundPosition = `-${col * 100}px -${row * 100}px`;
-                piece.style.width = `${100}px`;
-                piece.style.height = `${100}px`;
+                piece.style.backgroundPosition = `-${col * this.pieceSize}px -${row * this.pieceSize}px`;
+                piece.style.width = `${this.pieceSize}px`;
+                piece.style.height = `${this.pieceSize}px`;
                 piece.style.position = 'absolute';
                 piece.setAttribute('data-position', `${row}-${col}`);
                 this.puzzleContainer.appendChild(piece);
@@ -29,7 +30,7 @@ class PuzzleGame {
             }
         }
         this.createPuzzleContainer();
-        this.shufflePuzzle();
+        this.shufflePuzzle(); // Randomly shuffle pieces
         this.addDragAndDropFunctionality();
     }
 
@@ -47,29 +48,18 @@ class PuzzleGame {
 
     private shufflePuzzle(): void {
         const container = document.getElementById('puzzle-piece-container') as HTMLElement;
-        const winDim = this.getWinDim();
-        let currentRow = 1;
-        let y = winDim.y - 100;
-        let x = 100;
-        this.pieces.forEach(piece => {
-            piece.style.left = `${x}px`;
-            piece.style.top = `${y}px`;
-            container.appendChild(piece); // Place pieces inside the puzzle piece container
-            x += 120;
-            if (x >= winDim.x - 100) {
-                currentRow++;
-                y = winDim.y - 100 * currentRow;
-                x = 100;
-            }
-        });
-    }
+        const containerWidth = container.offsetWidth - this.pieceSize;
+        const containerHeight = container.offsetHeight - this.pieceSize;
 
-    private getWinDim(): { x: number, y: number } {
-        const body = document.documentElement || document.body;
-        return {
-            x: window.innerWidth || body.clientWidth,
-            y: window.innerHeight || body.clientHeight
-        };
+        this.pieces.forEach(piece => {
+            // Generate random x and y positions within the container bounds
+            const randomX = Math.floor(Math.random() * (containerWidth + 1));
+            const randomY = Math.floor(Math.random() * (containerHeight + 1));
+
+            piece.style.left = `${randomX}px`;
+            piece.style.top = `${randomY}px`;
+            container.appendChild(piece); // Place pieces inside the puzzle piece container
+        });
     }
 
     private addDragAndDropFunctionality(): void {
@@ -94,22 +84,40 @@ class PuzzleGame {
 
         container.addEventListener('dragover', (e) => {
             e.preventDefault();
-            console.log('x: ' + e.clientX  + 'y: ' + e.clientY);
-            console.log();
         });
 
         container.addEventListener('drop', (e) => {
             e.preventDefault();
             if (draggedPiece) {
                 const rect = container.getBoundingClientRect();
-                const x = e.clientX;
-                const y = e.clientY;
-                draggedPiece.style.left = `${x}px`;
-                draggedPiece.style.top = `${y}px`;
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const snappedX = Math.round(x / this.pieceSize) * this.pieceSize;
+                const snappedY = Math.round(y / this.pieceSize) * this.pieceSize;
+
+                if (!this.isGridCellOccupied(snappedX, snappedY)) {
+                    draggedPiece.style.left = `${snappedX}px`;
+                    draggedPiece.style.top = `${snappedY}px`;
+                } else {
+                    console.log('Cell is occupied. Please choose another cell.');
+                }
 
                 this.checkIfPuzzleSolved();
             }
         });
+    }
+
+    private isGridCellOccupied(x: number, y: number): boolean {
+        let occupied = false;
+        this.pieces.forEach(piece => {
+            const left = parseInt(piece.style.left, 10);
+            const top = parseInt(piece.style.top, 10);
+            if (left === x && top === y) {
+                occupied = true;
+            }
+        });
+        return occupied;
     }
 
     private checkIfPuzzleSolved(): void {
@@ -120,7 +128,10 @@ class PuzzleGame {
             const left = parseInt(piece.style.left, 10);
             const top = parseInt(piece.style.top, 10);
 
-            if (left !== parseInt(pos[1]) * 100 || top !== parseInt(pos[0]) * 100) {
+            const correctLeft = parseInt(pos[1]) * this.pieceSize;
+            const correctTop = parseInt(pos[0]) * this.pieceSize;
+
+            if (left !== correctLeft || top !== correctTop) {
                 isSolved = false;
             }
         });
