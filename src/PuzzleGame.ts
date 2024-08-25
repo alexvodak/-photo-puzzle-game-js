@@ -20,27 +20,61 @@ class PuzzleGame {
                 piece.classList.add('puzzle-piece');
                 piece.style.backgroundImage = `url(${this.imageUrl})`;
                 piece.style.backgroundPosition = `-${col * 100}px -${row * 100}px`;
+                piece.style.width = `${100}px`;
+                piece.style.height = `${100}px`;
+                piece.style.position = 'absolute';
                 piece.setAttribute('data-position', `${row}-${col}`);
                 this.puzzleContainer.appendChild(piece);
                 this.pieces.push(piece);
             }
         }
+        this.createPuzzleContainer();
         this.shufflePuzzle();
         this.addDragAndDropFunctionality();
     }
 
+    private createPuzzleContainer(): void {
+        const imgElement = document.getElementById('uploaded-img') as HTMLImageElement;
+        const puzzlePieceContainer = document.createElement('div');
+        puzzlePieceContainer.id = 'puzzle-piece-container';
+        puzzlePieceContainer.style.position = 'relative';
+        puzzlePieceContainer.style.width = `${imgElement.style.width}`;
+        puzzlePieceContainer.style.height = `${imgElement.style.height}`;
+        puzzlePieceContainer.style.border = '1px solid #000';
+        puzzlePieceContainer.style.marginTop = '20px';
+        this.puzzleContainer.appendChild(puzzlePieceContainer);
+    }
+
     private shufflePuzzle(): void {
+        const container = document.getElementById('puzzle-piece-container') as HTMLElement;
+        const winDim = this.getWinDim();
+        let currentRow = 1;
+        let y = winDim.y - 100;
+        let x = 100;
         this.pieces.forEach(piece => {
-            const randomX = Math.floor(Math.random() * 300);
-            const randomY = Math.floor(Math.random() * 300);
-            piece.style.position = 'absolute';  // Ensure pieces are positioned absolutely
-            piece.style.left = `${randomX}px`;
-            piece.style.top = `${randomY}px`;
+            piece.style.left = `${x}px`;
+            piece.style.top = `${y}px`;
+            container.appendChild(piece); // Place pieces inside the puzzle piece container
+            x += 120;
+            if (x >= winDim.x - 100) {
+                currentRow++;
+                y = winDim.y - 100 * currentRow;
+                x = 100;
+            }
         });
+    }
+
+    private getWinDim(): { x: number, y: number } {
+        const body = document.documentElement || document.body;
+        return {
+            x: window.innerWidth || body.clientWidth,
+            y: window.innerHeight || body.clientHeight
+        };
     }
 
     private addDragAndDropFunctionality(): void {
         let draggedPiece: HTMLElement | null = null;
+        const container = document.getElementById('puzzle-piece-container') as HTMLElement;
 
         this.pieces.forEach(piece => {
             piece.setAttribute('draggable', 'true'); // Make pieces draggable
@@ -56,25 +90,25 @@ class PuzzleGame {
                     draggedPiece = null;
                 }
             });
+        });
 
-            piece.addEventListener('dragover', (e) => {
-                e.preventDefault();
-            });
+        container.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            console.log('x: ' + e.clientX  + 'y: ' + e.clientY);
+            console.log();
+        });
 
-            piece.addEventListener('drop', (e) => {
-                e.preventDefault();
-                const targetPiece = e.target as HTMLElement;
+        container.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (draggedPiece) {
+                const rect = container.getBoundingClientRect();
+                const x = e.clientX;
+                const y = e.clientY;
+                draggedPiece.style.left = `${x}px`;
+                draggedPiece.style.top = `${y}px`;
 
-                if (draggedPiece && targetPiece !== draggedPiece) {
-                    const draggedPos = { left: draggedPiece.style.left, top: draggedPiece.style.top };
-                    draggedPiece.style.left = targetPiece.style.left;
-                    draggedPiece.style.top = targetPiece.style.top;
-                    targetPiece.style.left = draggedPos.left;
-                    targetPiece.style.top = draggedPos.top;
-
-                    this.checkIfPuzzleSolved();
-                }
-            });
+                this.checkIfPuzzleSolved();
+            }
         });
     }
 
@@ -97,6 +131,10 @@ class PuzzleGame {
             }, 100);
         }
     }
+
+    public Cleanup(): void {
+        // Implement cleanup if necessary
+    }
 }
-// const puzzleGame = new PuzzleGame('https://via.placeholder.com/400', 4, 4, 'puzzle-container');
+
 export { PuzzleGame };

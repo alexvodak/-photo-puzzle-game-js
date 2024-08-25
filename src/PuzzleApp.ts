@@ -1,58 +1,31 @@
-import { Modal } from './Modal.js';
-import { PuzzleGame } from './PuzzleGame.js';
+
+import { PuzzleGameHandler } from './PuzzleGameHandler.js';
+import { ImageUploader } from './ImageUploader.js';
 
 class PuzzleApp {
-    private modal: Modal | null = null;
+   private imageUploader: ImageUploader | null = null;
+   private puzzleGameHandler: PuzzleGameHandler | null = null;
 
     constructor() {
-        this.initUploadPictureModal();
-    }
-
-    private initUploadPictureModal(): void {
-        const uploadBtn = document.getElementById('upload-btn') as HTMLButtonElement;
-        uploadBtn.addEventListener('click', () => {
-            const content = `
-                <input type="file" id="upload-image" accept="image/*">
-            `;
-
-            this.modal = new Modal('upload-modal', 'Upload image', content, () => {
-                const fileInput = document.getElementById('upload-image') as HTMLInputElement;
-                const file = fileInput.files ? fileInput.files[0] : null;
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const puzzleContainer = document.getElementById('puzzle-container')!;
-                        const imgElement = document.createElement('img');
-                        imgElement.src = e.target!.result as string;
-                        imgElement.style.display = 'block';
-                        puzzleContainer.innerHTML = '';
-                        puzzleContainer.appendChild(imgElement);
-                        this.resizeImageToFitScreen(imgElement);
-                    };
-                    reader.readAsDataURL(file);
-                }
-                console.log("Image uploaded");
-            });
-
-            this.modal.open();
+        this.imageUploader = new ImageUploader();
+        const startBtn = document.getElementById('start-game-btn') as HTMLButtonElement;
+        startBtn.addEventListener('click', () => {
+            this.Start();
         });
     }
 
-    private resizeImageToFitScreen(imgElement: HTMLImageElement): void {
-        const winDim = this.getWinDim();
-        imgElement.style.height = `${winDim.y}px`;
-        if (imgElement.offsetWidth > winDim.x) {
-            imgElement.style.width = `${winDim.x}px`;
+    Start() :void {
+        const url = this.imageUploader?.GetUrl();
+        if (url) {
+            this.puzzleGameHandler = new PuzzleGameHandler(url, 4, 4, 'puzzle-container');
+            this.imageUploader?.HideImg();
+            this.puzzleGameHandler.Start();
+        } else {
+            console.log("no picture");
         }
     }
 
-    private getWinDim(): { x: number, y: number } {
-        const body = document.documentElement || document.body;
-        return {
-            x: window.innerWidth || body.clientWidth,
-            y: window.innerHeight || body.clientHeight
-        };
-    }
+    //make controls to start and reset
 }
 
 export { PuzzleApp };
