@@ -1,150 +1,151 @@
+
+class PuzzleCell {
+    private isEmpty: boolean;
+    private index: number;
+    private puzzle: any;
+    private width: number;
+    private height: number;
+    private div: HTMLDivElement;
+
+    constructor(puzzle: any, index: number) {
+        this.puzzle = puzzle;
+        this.index = index;
+        this.width = this.puzzle.width / this.puzzle.dimmension;
+        this.height = this.puzzle.height / this.puzzle.dimmension;
+
+        this.div = this.createDiv();
+        this.puzzle.parentEl.appendChild(this.div);
+
+        this.isEmpty = false;
+        if (this.index === this.puzzle.dimmension * this.puzzle.dimmension - 1) {
+            this.isEmpty = true;
+            return;
+        }
+
+        this.setImage();
+        this.setPosition(this.index);
+    }
+
+    private createDiv(): HTMLDivElement {
+        const div = document.createElement('div');
+        div.style.backgroundSize = `${this.puzzle.width}px ${this.puzzle.height}px`;
+        div.style.border = '1px solid #FFF';
+        div.style.position = 'absolute';
+
+        div.onclick = () => {
+            console.log(`clicked: ${this.index}`);
+        };
+
+        return div;
+    }
+
+    private setImage(): void {
+        const { x, y } = this.getXY(this.index);
+        const left = this.width * x;
+        const top = this.height * y;
+
+        this.div.style.width = `${this.width}px`;
+        this.div.style.height = `${this.height}px`;
+
+        this.div.style.backgroundImage = `url(${this.puzzle.imageSrc})`;
+        this.div.style.backgroundPosition = `-${left}px -${top}px`;
+    }
+
+    //get absolute pos by index
+    private getPositionFromIndex(index: number): { left: number; top: number } {
+        const { x, y } = this.getXY(index);
+        return {
+            left: this.width * x,
+            top: this.height * y
+        };
+    }
+
+    //get 2 dimension XY of the picture to show
+    private getXY(index: number): { x: number; y: number } {
+        return {
+            x: index % this.puzzle.dimmension,
+            y: Math.floor(index / this.puzzle.dimmension)
+        };
+    }
+
+    setPosition(destinationIndex: number) {
+        const { left, top } = this.getPositionFromIndex(destinationIndex);
+        this.div.style.left = `${left}px`;
+        this.div.style.top = `${top}px`;
+    }
+}
+
 class PuzzleGame {
-    private imageUrl: string;
-    private rows: number;
-    private cols: number;
-    private puzzleContainer: HTMLElement;
-    private pieces: HTMLElement[] = [];
-    private pieceSize = 100; // Assuming each piece is 100x100 pixels
+    private parentEl: HTMLElement;
+    private wrapper!: HTMLElement;
+    private imageSrc: string;
+    private width: number;
+    private height: number = 0;
+    private dimmension: number;
+    private cells: PuzzleCell[] = [];
 
-    constructor(imageUrl: string, rows: number, cols: number, containerId: string) {
-        this.imageUrl = imageUrl;
-        this.rows = rows;
-        this.cols = cols;
-        this.puzzleContainer = document.getElementById(containerId) as HTMLElement;
-        this.createPuzzle();
+    constructor(parentEl: HTMLElement, imageSrc: string, width: number, dimmension: number = 3) {
+        this.parentEl = parentEl;
+        this.imageSrc = imageSrc;
+        this.width = width;
+        this.dimmension = dimmension;
+        this.initWrapper();
+        this.initImage();
+        
+        //this.cells = [];
+
+        // for(var i: number = 0; i < 10; i++) {
+        //     this.cells[i] = [];
+        //     for(var j: number = 0; j< 10; j++) {
+        //         this.cells[i][j] = new PuzzleCell();
+        //     }
+        // }
     }
 
-    private createPuzzle(): void {
-        for (let row = 0; row < this.rows; row++) {
-            for (let col = 0; col < this.cols; col++) {
-                const piece = document.createElement('div');
-                piece.classList.add('puzzle-piece');
-                piece.style.backgroundImage = `url(${this.imageUrl})`;
-                piece.style.backgroundPosition = `-${col * this.pieceSize}px -${row * this.pieceSize}px`;
-                piece.style.width = `${this.pieceSize}px`;
-                piece.style.height = `${this.pieceSize}px`;
-                piece.style.position = 'absolute';
-                piece.setAttribute('data-position', `${row}-${col}`);
-                this.puzzleContainer.appendChild(piece);
-                this.pieces.push(piece);
-            }
+    private initWrapper(): void {
+        this.wrapper = this.createWrapper();
+        this.parentEl.appendChild(this.wrapper);
+    }
+
+    private createWrapper(): HTMLElement {
+        const div = document.createElement('div');
+        div.style.position = 'relative';
+        div.style.margin = '0 auto';
+        return div;
+    }
+
+    private initImage(): void {
+        const img = new Image();
+        img.onload = () => {
+            console.log(img.width, img.height);
+            //calc picture size
+            this.height = (img.height * this.width) / img.width;
+            this.wrapper.style.width = `${this.width}px`;
+            this.wrapper.style.height = `${this.height}px`;
+
+            this.setup();
+        };
+        img.src = this.imageSrc;
+    }
+
+    private setup(): void {
+        for (let i = 0; i < this.dimmension * this.dimmension; i++) {
+            this.cells.push(new PuzzleCell(this, i));
         }
-        this.createPuzzleContainer();
-        this.shufflePuzzle(); // Randomly shuffle pieces
-        this.addDragAndDropFunctionality();
+        this.shuffle();
     }
 
-    private createPuzzleContainer(): void {
-        const imgElement = document.getElementById('uploaded-img') as HTMLImageElement;
-        const puzzlePieceContainer = document.createElement('div');
-        puzzlePieceContainer.id = 'puzzle-piece-container';
-        puzzlePieceContainer.style.position = 'relative';
-        puzzlePieceContainer.style.width = `${imgElement.style.width}`;
-        puzzlePieceContainer.style.height = `${imgElement.style.height}`;
-        puzzlePieceContainer.style.border = '1px solid #000';
-        puzzlePieceContainer.style.marginTop = '20px';
-        this.puzzleContainer.appendChild(puzzlePieceContainer);
-    }
-
-    private shufflePuzzle(): void {
-        const container = document.getElementById('puzzle-piece-container') as HTMLElement;
-        const containerWidth = container.offsetWidth - this.pieceSize;
-        const containerHeight = container.offsetHeight - this.pieceSize;
-
-        this.pieces.forEach(piece => {
-            // Generate random x and y positions within the container bounds
-            const randomX = Math.floor(Math.random() * (containerWidth + 1));
-            const randomY = Math.floor(Math.random() * (containerHeight + 1));
-
-            piece.style.left = `${randomX}px`;
-            piece.style.top = `${randomY}px`;
-            container.appendChild(piece); // Place pieces inside the puzzle piece container
-        });
-    }
-
-    private addDragAndDropFunctionality(): void {
-        let draggedPiece: HTMLElement | null = null;
-        const container = document.getElementById('puzzle-piece-container') as HTMLElement;
-
-        this.pieces.forEach(piece => {
-            piece.setAttribute('draggable', 'true'); // Make pieces draggable
-
-            piece.addEventListener('dragstart', () => {
-                draggedPiece = piece;
-                piece.classList.add('dragging');
-            });
-
-            piece.addEventListener('dragend', () => {
-                if (draggedPiece) {
-                    draggedPiece.classList.remove('dragging');
-                    draggedPiece = null;
-                }
-            });
-        });
-
-        container.addEventListener('dragover', (e) => {
-            e.preventDefault();
-        });
-
-        container.addEventListener('drop', (e) => {
-            e.preventDefault();
-            if (draggedPiece) {
-                const rect = container.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-
-                const snappedX = Math.round(x / this.pieceSize) * this.pieceSize;
-                const snappedY = Math.round(y / this.pieceSize) * this.pieceSize;
-
-                if (!this.isGridCellOccupied(snappedX, snappedY)) {
-                    draggedPiece.style.left = `${snappedX}px`;
-                    draggedPiece.style.top = `${snappedY}px`;
-                } else {
-                    console.log('Cell is occupied. Please choose another cell.');
-                }
-
-                this.checkIfPuzzleSolved();
-            }
-        });
-    }
-
-    private isGridCellOccupied(x: number, y: number): boolean {
-        let occupied = false;
-        this.pieces.forEach(piece => {
-            const left = parseInt(piece.style.left, 10);
-            const top = parseInt(piece.style.top, 10);
-            if (left === x && top === y) {
-                occupied = true;
-            }
-        });
-        return occupied;
-    }
-
-    private checkIfPuzzleSolved(): void {
-        let isSolved = true;
-
-        this.pieces.forEach(piece => {
-            const pos = piece.getAttribute('data-position')!.split('-');
-            const left = parseInt(piece.style.left, 10);
-            const top = parseInt(piece.style.top, 10);
-
-            const correctLeft = parseInt(pos[1]) * this.pieceSize;
-            const correctTop = parseInt(pos[0]) * this.pieceSize;
-
-            if (left !== correctLeft || top !== correctTop) {
-                isSolved = false;
-            }
-        });
-
-        if (isSolved) {
-            setTimeout(() => {
-                alert('Congratulations! You solved the puzzle!');
-            }, 100);
+    private shuffle(): void {
+        for (let i = this.cells.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            this.swapCells(i, j);
         }
     }
 
-    public Cleanup(): void {
-        // Implement cleanup if necessary
+    public swapCells(i: number, j: number): void {
+        this.cells[i].setPosition(j);
+        this.cells[j].setPosition(i);
+        [this.cells[i], this.cells[j]] = [this.cells[j], this.cells[i]];
     }
 }
 
