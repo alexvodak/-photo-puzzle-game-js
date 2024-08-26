@@ -26,6 +26,14 @@ class PuzzleCell {
         this.setPosition(this.index);
     }
 
+    getIsEmpy(): boolean {
+        return this.isEmpty;
+    }
+
+    getIndex(): number {
+        return this.index;
+    }
+
     private createDiv(): HTMLDivElement {
         const div = document.createElement('div');
         div.style.backgroundSize = `${this.puzzle.width}px ${this.puzzle.height}px`;
@@ -34,6 +42,11 @@ class PuzzleCell {
 
         div.onclick = () => {
             console.log(`clicked: ${this.index}`);
+            const current = this.puzzle.findPosition(this.index);
+            console.log(`current: ${current}`);
+            const empty = this.puzzle.findEmpty();
+            console.log(`empty: ${empty}`);
+            this.puzzle.swapCells(current, empty);
         };
 
         return div;
@@ -91,15 +104,6 @@ class PuzzleGame {
         this.dimmension = dimmension;
         this.initWrapper();
         this.initImage();
-        
-        //this.cells = [];
-
-        // for(var i: number = 0; i < 10; i++) {
-        //     this.cells[i] = [];
-        //     for(var j: number = 0; j< 10; j++) {
-        //         this.cells[i][j] = new PuzzleCell();
-        //     }
-        // }
     }
 
     private initWrapper(): void {
@@ -146,6 +150,21 @@ class PuzzleGame {
         this.cells[i].setPosition(j);
         this.cells[j].setPosition(i);
         [this.cells[i], this.cells[j]] = [this.cells[j], this.cells[i]];
+    }
+
+    public findPosition(ind: number): number {
+        return this.cells.findIndex(cell => cell.getIndex() === ind);
+    }
+
+    public findEmpty(): number {
+        return this.cells.findIndex(cell => cell.getIsEmpy());
+    }
+
+    private isAssembled(): boolean {
+        for (let i = 0; i < this.cells.length; i++) {
+            
+        }
+        return true;
     }
 }
 
