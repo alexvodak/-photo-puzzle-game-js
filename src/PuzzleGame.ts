@@ -19,6 +19,23 @@ class PuzzleGame {
         this.initImage();
     }
 
+    public swapCells(i: number, j: number, isShuffling: boolean = false): void {
+        this.cells[i].setScreenDisplayPosition(j);
+        this.cells[j].setScreenDisplayPosition(i);
+        [this.cells[i], this.cells[j]] = [this.cells[j], this.cells[i]];
+        if (!isShuffling && this.isAssembled()) {
+            this.onFinished.call(this);
+        }
+    }
+
+    public findPosition(ind: number): number {
+        return this.cells.findIndex(cell => cell.getIndex() === ind);
+    }
+
+    public findEmpty(): number {
+        return this.cells.findIndex(cell => cell.getIsEmpy());
+    }
+
     private initWrapper(): void {
         this.wrapper = this.createWrapper();
         this.parentEl.appendChild(this.wrapper);
@@ -34,22 +51,23 @@ class PuzzleGame {
     private initImage(): void {
         const img = new Image();
         img.onload = () => {
-            console.log(img.width, img.height);
-            //calc picture size
-            this.height = (img.height * this.width) / img.width;
-            this.wrapper.style.width = `${this.width}px`;
-            this.wrapper.style.height = `${this.height}px`;
-
+            this.initImageStyles(img);
             this.setup();
+            this.shuffle();
         };
         img.src = this.imageSrc;
+    }
+
+    private initImageStyles(img: any) {
+        this.height = (img.height * this.width) / img.width;
+        this.wrapper.style.width = `${this.width}px`;
+        this.wrapper.style.height = `${this.height}px`;
     }
 
     private setup(): void {
         for (let i = 0; i < this.dimmension * this.dimmension; i++) {
             this.cells.push(new PuzzleCell(this, i));
         }
-        this.shuffle();
     }
 
     private shuffle(): void {
@@ -59,32 +77,13 @@ class PuzzleGame {
         }
     }
 
-    public swapCells(i: number, j: number, isShuffling: boolean = false): void {
-        this.cells[i].setPosition(j);
-        this.cells[j].setPosition(i);
-        [this.cells[i], this.cells[j]] = [this.cells[j], this.cells[i]];
-        if (!isShuffling && this.isAssembled()) {
-            this.onFinished.call(this);
-        }
-    }
-
-    public findPosition(ind: number): number {
-        return this.cells.findIndex(cell => cell.getIndex() === ind);
-    }
-
-    public findEmpty(): number {
-        return this.cells.findIndex(cell => cell.getIsEmpy());
-    }
-
     private isAssembled(): boolean {
         let isAssembled = true;
-        console.log('isAssembled check');
         for (let i = 0; i < this.cells.length; i++) {
             if (i != this.cells[i].getIndex()) {
                 isAssembled = false;
                 break;
             }
-            console.log(`i=${i}, index=${this.cells[i].getIndex()}`);
         }
         return isAssembled;
     }

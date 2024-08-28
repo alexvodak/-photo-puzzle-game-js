@@ -74,5 +74,9 @@ button:hover {
 
 .puzzle-completed-modal-content {
     font-weight: bold;
-    background-color: #007bff;
+}
+
+.input-element {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }

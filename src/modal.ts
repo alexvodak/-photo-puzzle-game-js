@@ -6,7 +6,7 @@ class Modal {
     private footerElement: HTMLDivElement;    
     private closeButton: HTMLButtonElement;
 
-    constructor(id: string, title: string, content: string | HTMLElement, onSubmit: () => void) {
+    constructor(id: string, title: string, content: string | HTMLElement, submitButtonText : string, onSubmit: () => void) {
         this.modalElement = document.createElement('div');
         this.modalElement.classList.add('modal');
 
@@ -41,7 +41,7 @@ class Modal {
         this.contentElement.appendChild(this.footerElement);
 
         const submitButton = document.createElement('button');
-        submitButton.innerText = 'Submit';
+        submitButton.innerText = submitButtonText;
         submitButton.onclick = () => {
             onSubmit();
             this.close();

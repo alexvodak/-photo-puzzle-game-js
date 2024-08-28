@@ -21,8 +21,8 @@ class PuzzleCell {
             return;
         }
 
-        this.setImage();
-        this.setPosition(this.index);
+        this.setImageDisplayPosition();
+        this.setScreenDisplayPosition(this.index);
     }
 
     getIsEmpy(): boolean {
@@ -41,18 +41,15 @@ class PuzzleCell {
         div.style.transition = 'top 0.3s ease, left 0.3s ease';
 
         div.onclick = () => {
-            console.log(`clicked: ${this.index}`);
-            const current = this.puzzle.findPosition(this.index);
-            console.log(`current: ${current}`);
-            const empty = this.puzzle.findEmpty();
-            console.log(`empty: ${empty}`);
-            this.puzzle.swapCells(current, empty);
+            const currentArrayIndex = this.puzzle.findPosition(this.index);
+            const emptyArrayIndex = this.puzzle.findEmpty();
+            this.puzzle.swapCells(currentArrayIndex, emptyArrayIndex);
         };
 
         return div;
     }
 
-    private setImage(): void {
+    private setImageDisplayPosition(): void {
         const { x, y } = this.getXY(this.index);
         const left = this.width * x;
         const top = this.height * y;
@@ -81,7 +78,7 @@ class PuzzleCell {
         };
     }
 
-    setPosition(destinationIndex: number) {
+    public setScreenDisplayPosition(destinationIndex: number) {
         const { left, top } = this.getPositionFromIndex(destinationIndex);
         this.div.style.left = `${left}px`;
         this.div.style.top = `${top}px`;
