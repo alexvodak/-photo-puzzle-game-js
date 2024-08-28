@@ -1,12 +1,10 @@
 import { Modal } from './Modal.js';
-import { PuzzleGame } from './PuzzleGame.js';
 
 class PuzzleGameModal {
     private modal: Modal | null = null;
     private url: string | null = null;
-    private puzzleGame: PuzzleGame | null = null;
 
-    Start():void {
+    Start(onloadCompleted: (puzzleContainer: HTMLElement, url: string) => void):void {
         const content = `
             <input type="file" id="upload-image" accept="image/*">
         `;
@@ -24,7 +22,8 @@ class PuzzleGameModal {
                     imgElement.src = this.url;
                     imgElement.style.display = 'none';
                     puzzleContainer.appendChild(imgElement);
-                    this.puzzleGame = new PuzzleGame(puzzleContainer, this.url, 600, 3);
+                    onloadCompleted(puzzleContainer, this.url);
+                    
                 };
                 reader.readAsDataURL(file);
                 console.log("Image uploaded");

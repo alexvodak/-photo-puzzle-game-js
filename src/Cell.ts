@@ -30,6 +30,7 @@ class Cell {
         div.style.backgroundSize = `${this.puzzle.width}px ${this.puzzle.height}px`;
         div.style.border = '1px solid #FFF';
         div.style.position = 'absolute';
+        div.style.transition = 'top 0.3s ease, left 0.3s ease';
 
         div.onclick = () => {
             const currentCellIndex = this.puzzle.findPosition(this.index);

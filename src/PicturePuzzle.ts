@@ -9,7 +9,6 @@ class PicturePuzzle {
     private dimmension: number;
     private cells: Cell[] = [];
     private shuffling: boolean = false;
-    private numberOfMovements: number = 0;
 
     // Events
     public onFinished: () => void = () => {};

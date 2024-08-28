@@ -71,3 +71,8 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+
+.puzzle-completed-modal-content {
+    font-weight: bold;
+    background-color: #007bff;
+}

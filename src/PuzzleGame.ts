@@ -39,6 +39,7 @@ class PuzzleCell {
         div.style.backgroundSize = `${this.puzzle.width}px ${this.puzzle.height}px`;
         div.style.border = '1px solid #FFF';
         div.style.position = 'absolute';
+        div.style.transition = 'top 0.3s ease, left 0.3s ease';
 
         div.onclick = () => {
             console.log(`clicked: ${this.index}`);
@@ -96,6 +97,7 @@ class PuzzleGame {
     private height: number = 0;
     private dimmension: number;
     private cells: PuzzleCell[] = [];
+    public onFinished: () => void = () => {};
 
     constructor(parentEl: HTMLElement, imageSrc: string, width: number, dimmension: number = 3) {
         this.parentEl = parentEl;
@@ -142,14 +144,17 @@ class PuzzleGame {
     private shuffle(): void {
         for (let i = this.cells.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            this.swapCells(i, j);
+            this.swapCells(i, j, true);
         }
     }
 
-    public swapCells(i: number, j: number): void {
+    public swapCells(i: number, j: number, isShuffling: boolean = false): void {
         this.cells[i].setPosition(j);
         this.cells[j].setPosition(i);
         [this.cells[i], this.cells[j]] = [this.cells[j], this.cells[i]];
+        if (!isShuffling && this.isAssembled()) {
+            this.onFinished.call(this);
+        }
     }
 
     public findPosition(ind: number): number {
@@ -161,10 +166,16 @@ class PuzzleGame {
     }
 
     private isAssembled(): boolean {
+        let isAssembled = true;
+        console.log('isAssembled check');
         for (let i = 0; i < this.cells.length; i++) {
-            
+            if (i != this.cells[i].getIndex()) {
+                isAssembled = false;
+                break;
+            }
+            console.log(`i=${i}, index=${this.cells[i].getIndex()}`);
         }
-        return true;
+        return isAssembled;
     }
 }
 
