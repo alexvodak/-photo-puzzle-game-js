@@ -22,7 +22,7 @@ jobs:
           node-version: '20.16'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci  # Use 'npm ci' for a clean install based on package-lock.json
 
       - name: Compile TypeScript
         run: npm run build
