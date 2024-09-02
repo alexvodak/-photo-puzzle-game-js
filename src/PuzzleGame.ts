@@ -1,4 +1,4 @@
-import { PuzzleCell } from './PuzzleCell';
+import { PuzzleCell } from './PuzzleCell.js';
 
 export class PuzzleGame {
     private parentEl: HTMLElement;

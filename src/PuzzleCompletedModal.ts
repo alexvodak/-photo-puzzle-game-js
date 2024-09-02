@@ -1,4 +1,4 @@
-import { Modal } from './Modal';
+import { Modal } from './Modal.js';
 
 export class PuzzleCompletedModal {
     private modal: Modal | null = null;
