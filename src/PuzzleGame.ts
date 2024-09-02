@@ -1,6 +1,6 @@
 import { PuzzleCell } from './PuzzleCell.js';
 
-class PuzzleGame {
+export class PuzzleGame {
     private parentEl: HTMLElement;
     private wrapper!: HTMLElement;
     private imageSrc: string;
@@ -88,5 +88,3 @@ class PuzzleGame {
         return isAssembled;
     }
 }
-
-export { PuzzleGame };

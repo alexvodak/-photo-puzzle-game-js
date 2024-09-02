@@ -1,4 +1,4 @@
-class Modal {
+export class Modal {
     private modalElement: HTMLDivElement;
     private contentElement: HTMLDivElement;
     private headerElement: HTMLDivElement;
@@ -60,5 +60,3 @@ class Modal {
         this.modalElement.style.display = 'none';
     }
 }
-
-export { Modal };

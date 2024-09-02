@@ -1,6 +1,6 @@
 import { Modal } from './Modal.js';
 
-class PuzzleGameModal {
+export class PuzzleGameModal {
     private modal: Modal | null = null;
     private url: string | null = null;
     private size: number | null = null;
@@ -47,5 +47,3 @@ class PuzzleGameModal {
 
 
 }
-
-export { PuzzleGameModal };

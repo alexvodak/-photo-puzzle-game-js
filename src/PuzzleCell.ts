@@ -1,4 +1,4 @@
-class PuzzleCell {
+export class PuzzleCell {
     private isEmpty: boolean;
     private index: number;
     private puzzle: any;
@@ -84,5 +84,3 @@ class PuzzleCell {
         this.div.style.top = `${top}px`;
     }
 }
-
-export { PuzzleCell };

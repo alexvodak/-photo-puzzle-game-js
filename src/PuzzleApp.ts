@@ -3,7 +3,7 @@ import { PuzzleGameModal } from './PuzzleGameModal.js';
 import { PuzzleGame } from './PuzzleGame.js';
 import { PuzzleCompletedModal } from './PuzzleCompletedModal.js';
 
-class PuzzleApp {
+export class PuzzleApp {
     private puzzleGameModal: PuzzleGameModal | null = null;
     private puzzleGame: PuzzleGame | null = null;
     private puzzleContainer: HTMLElement | null = null;
@@ -54,5 +54,3 @@ class PuzzleApp {
         }
     }
 }
-
-export { PuzzleApp };

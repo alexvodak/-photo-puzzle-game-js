@@ -1,6 +1,6 @@
 import { Modal } from './Modal.js';
 
-class PuzzleCompletedModal {
+export class PuzzleCompletedModal {
     private modal: Modal | null = null;
 
     Start():void {
@@ -15,5 +15,3 @@ class PuzzleCompletedModal {
 
 
 }
-
-export { PuzzleCompletedModal };
