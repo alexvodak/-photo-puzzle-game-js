@@ -3,7 +3,7 @@ name: Build TypeScript Project
 on:
   push:
     branches:
-      - main  # Runs on push to the main branch
+      - "**"  # Runs on push to the main branch
   pull_request:
     branches:
       - main  # Runs on pull request to the main branch
