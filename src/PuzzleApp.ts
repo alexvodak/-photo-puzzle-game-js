@@ -1,7 +1,7 @@
 
-import { PuzzleGameModal } from './PuzzleGameModal.js';
-import { PuzzleGame } from './PuzzleGame.js';
-import { PuzzleCompletedModal } from './PuzzleCompletedModal.js';
+import { PuzzleGameModal } from './PuzzleGameModal';
+import { PuzzleGame } from './PuzzleGame';
+import { PuzzleCompletedModal } from './PuzzleCompletedModal';
 
 export class PuzzleApp {
     private puzzleGameModal: PuzzleGameModal | null = null;

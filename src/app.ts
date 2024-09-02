@@ -1,3 +1,3 @@
-import { PuzzleApp } from './PuzzleApp.js';
+import { PuzzleApp } from './PuzzleApp';
 
 new PuzzleApp();
