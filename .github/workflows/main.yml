@@ -3,7 +3,7 @@ name: Build TypeScript Project
 on:
   push:
     branches:
-      - "**"  # Runs on push to the main branch
+      - "**"  # Runs on push to all branches
   pull_request:
     branches:
       - main  # Runs on pull request to the main branch
@@ -19,10 +19,26 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20.16'
+          node-version: '20.x'  # Use the same Node.js version as locally
 
       - name: Install dependencies
         run: npm ci  # Use 'npm ci' for a clean install based on package-lock.json
 
+      - name: Verify files generated before build
+        run: |
+          echo "Checking generated files..."
+          # You can add custom commands here to verify files existence
+          ls -al ./src/ # Check if all necessary files are in place
+
+      # Optional: If there's a step that generates files needed for the TypeScript build
+      # - name: Generate necessary files
+      #   run: npm run generate-files  # Example script to generate Modal.js, etc.
+
       - name: Compile TypeScript
-        run: npm run build
+        run: npx tsc  # Compiles TypeScript based on tsconfig.json
+
+      - name: Verify TypeScript output
+        run: ls -al ./dist/  # List files in the output directory to ensure expected output
+
+      - name: Bundle with Webpack
+        run: npm run build:webpack  # Assuming your build script uses Webpack
